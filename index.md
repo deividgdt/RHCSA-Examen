@@ -1010,7 +1010,7 @@ Realiza la tarea expuesta en cada apartado y haz clic en "Mostrar comando" para 
       </pre>
     </details>
 
-2. Explicación del comando chage
+2. Explicación del comando chage  
     ![image](images/chagecommand-explanation.png)
     <details>
       <summary>Mostrar comando</summary>
