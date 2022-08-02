@@ -1011,7 +1011,7 @@ Realiza la tarea expuesta en cada apartado y haz clic en "Mostrar comando" para 
     </details>
 
 2. Explicación del comando chage
-    ![image](images/chagecommand.png)
+    ![image](images/chagecommand-explanation.png)
     <details>
       <summary>Mostrar comando</summary>
       
