@@ -1,6 +1,6 @@
 # Simulacro del examen RHCSA 
-![version](https://img.shields.io/badge/Version-1.2-green)
-![revision](https://img.shields.io/badge/Revision%20progress-40%25-red)
+![version](https://img.shields.io/badge/Version-1.3-green)
+![revision](https://img.shields.io/badge/Revision%20progress-50%25-red)
 ![examen-version](https://img.shields.io/badge/RHCSA-8-red)
 
 Realiza la tarea expuesta en cada apartado y haz clic en "Mostrar comando" para ver un ejemplo de como realizar la tarea solicitada correctamente.
@@ -16,8 +16,8 @@ Realiza la tarea expuesta en cada apartado y haz clic en "Mostrar comando" para 
 5. [Control de servicios con systemctl](#id5)
 6. [Reestablecer la password del usuario root](#id6)
 7. [Gestion de discos](#id7)
-8. [Stratis](#id8)
-9. [VDO](#id9)
+8. [Almacenamiento en capas con Stratis](#id8)
+9. [Compresion de almacenamiento con VDO](#id9)
 10. [NFS](#id10)
 11. [Comando timedatectl](#id11)
 12. [chronyd](#id12)
@@ -585,7 +585,7 @@ Realiza la tarea expuesta en cada apartado y haz clic en "Mostrar comando" para 
 
 <div id='id8' />
 
-## 8. Stratis
+## 8. Almacenamiento en capas con Stratis
 
 1. Instalar stratis
     <details>
@@ -660,25 +660,48 @@ Realiza la tarea expuesta en cada apartado y haz clic en "Mostrar comando" para 
       <pre>
       #Obtenemos el UUID del device
       lsblk --output=UUID /dev/stratis/${pool-name}/${filesystem-name}
-      
+
       echo "UUID=105e8e96-2f87-4418-b8d6-0616b69b4410 /dirStratis xfs defaults,x-systemd.requires=stratisd.service" >> /etc/fstab
       </pre>
     </details>
 
-<div id='id9' />
-
-## 9. VDO
-
-1. Crear volumen
+9. Recuperar un filesystem de un snapshot
     <details>
       <summary>Mostrar comando</summary>
 
       <pre>
-      vdo create --name volume-vdo1 --device /dev/sda --vdoLogicalSize 20G  
+      #Obtenemos el UUID del device
+      lsblk --output=UUID /dev/stratis/${pool-name}/${filesystem-name}
+
+      echo "UUID=105e8e96-2f87-4418-b8d6-0616b69b4410 /dirStratis xfs defaults,x-systemd.requires=stratisd.service" >> /etc/fstab
       </pre>
     </details>
 
-2. Ver volumenes y su estado
+
+<div id='id9' />
+
+## 9. Compresion de almacenamiento con VDO
+
+1. Instalar VDO
+    <details>
+      <summary>Mostrar comando</summary>
+
+      <pre>
+      yum install vdo kmod-kvdo
+      </pre>
+    </details>
+
+
+2. Crear un volumen VDO
+    <details>
+      <summary>Mostrar comando</summary>
+
+      <pre>
+      vdo create --name volume-vdo1 --device /dev/sda --vdoLogicalSize 20G 
+      </pre>
+    </details>
+
+3. Ver volumenes y su estado
     <details>
       <summary>Mostrar comando</summary>
 
@@ -688,7 +711,7 @@ Realiza la tarea expuesta en cada apartado y haz clic en "Mostrar comando" para 
       </pre>
     </details>
 
-3. Formatear y montar volumen vdo
+4. Formatear y montar volumen vdo
     <details>
       <summary>Mostrar comando</summary>
 
@@ -699,7 +722,7 @@ Realiza la tarea expuesta en cada apartado y haz clic en "Mostrar comando" para 
       </pre>
     </details>
 
-4. Ver estado de un vdo
+5. Ver estado de un vdo
     <details>
       <summary>Mostrar comando</summary>
 
@@ -724,7 +747,7 @@ Realiza la tarea expuesta en cada apartado y haz clic en "Mostrar comando" para 
       </pre>
     </details>
 
-2. Ver recursos compartidos en un servidor
+2. Ver recursos NFS compartidos en un servidor
     <details>
       <summary>Mostrar comando</summary>
 
@@ -733,7 +756,7 @@ Realiza la tarea expuesta en cada apartado y haz clic en "Mostrar comando" para 
       </pre>
     </details>
 
-3. Automatizar montaje nfs - indirecto
+3. Automatizar montaje NFS - indirecto
     <details>
       <summary>Mostrar comando</summary>
 
@@ -746,10 +769,15 @@ Realiza la tarea expuesta en cada apartado y haz clic en "Mostrar comando" para 
       
       /etc/directpublic.test  
       nfs -rw,sync rhcsa-master.labrhel.com:/srv/nfs  
+      systemctl restart autofs
+      # A continuacion si se accede a /public/nfs autofs lee el fichero
+      # /etc/auto.master.d/public.autofs  y aplica las reglas que se 
+      # definan en /etc/directpublic.test, es decir, se monta:  
+      # rhcsa-master.labrhel.com:/srv/nfs en modo rw
       </pre>
     </details>
 
-4. Metodo directo
+4. Automatizar montaje NFS - directo
     <details>
       <summary>Mostrar comando</summary>
 
@@ -758,10 +786,13 @@ Realiza la tarea expuesta en cada apartado y haz clic en "Mostrar comando" para 
       /- /etc/indirectpublic.test  
       
       vi /etc/indirectpublic.test  
-      /mnt/nfs -rw,sync rhcsa-master.labrhel.com:/srv  
-
+      /mnt/nfs -rw,sync rhcsa-master.labrhel.com:/srv
+      systemctl restart autofs
+      # A continuación el recurso /srv se monta automaticamente en
+      # /mnt/nfs
       </pre>
     </details>
+
 
 <div id='id11' />
 
@@ -777,21 +808,22 @@ Realiza la tarea expuesta en cada apartado y haz clic en "Mostrar comando" para 
       </pre>
     </details>
 
-2. Ajustar hora
+2. Establecer la hora a: 09:30:10
     <details>
       <summary>Mostrar comando</summary>
 
       <pre>
-      timedatectl set-time 09:00:00
+      timedatectl set-time 09:30:10
       </pre>
     </details>
 
-3. Activar ntp service
+3. Activar NTP service y verificar si esta sincronizado
     <details>
       <summary>Mostrar comando</summary>
 
       <pre>
       timedatectl set-ntp true
+      timedatectl show | grep NTPSynchronized=yes
       </pre>
     </details>
 
