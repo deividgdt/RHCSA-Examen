@@ -1,6 +1,7 @@
 # Simulacro del examen RHCSA 
-![version](https://img.shields.io/badge/version-1.1-red)
-![examen-version](https://img.shields.io/badge/RHCSA-9-red)
+![version](https://img.shields.io/badge/Version-1.2-green)
+![revision](https://img.shields.io/badge/Revision%20progress-40%25-red)
+![examen-version](https://img.shields.io/badge/RHCSA-8-red)
 
 Realiza la tarea expuesta en cada apartado y haz clic en "Mostrar comando" para ver un ejemplo de como realizar la tarea solicitada correctamente.
 
@@ -457,7 +458,7 @@ Realiza la tarea expuesta en cada apartado y haz clic en "Mostrar comando" para 
       </pre>
     </details>
 
-### 7.1. LVM: LV y VG 
+### 7.1. Logical volume management: LV y VG 
 
 1. Crear disco para usar como lvm con parted
     <details>
@@ -477,13 +478,13 @@ Realiza la tarea expuesta en cada apartado y haz clic en "Mostrar comando" para 
 
       <pre>
       fdisk /dev/vdb  
-      n  
-      p  
-      inicio: predeterminado  
-      fin: +500M  
-      t  
-      8e  
-      w
+      Nueva particion: n  
+      Particion primaria: p  
+      Inicio: predeterminado  
+      Fin: +500M  
+      Indicar tipo de particion: t  
+      Indicar tipo lvm: 8e  
+      Guardar y salir: w
       </pre>
     </details>
 
@@ -492,7 +493,7 @@ Realiza la tarea expuesta en cada apartado y haz clic en "Mostrar comando" para 
       <summary>Mostrar respuesta</summary>
 
       <pre>
-      Es la cantidad de veces en la que se divide un Volume Group. ESta información se puede ver al ejecutar el comando vgdisplay  
+      Es la cantidad de veces en la que se divide un Volume Group. Esta información se puede ver al ejecutar el comando vgdisplay  
       PE Size               4,00 MiB  
       Total PE              242  
       Alloc PE / Size       0 / 0   
@@ -505,10 +506,10 @@ Realiza la tarea expuesta en cada apartado y haz clic en "Mostrar comando" para 
       <summary>Mostrar comando</summary>
 
       <pre>
-      lvcreate volumegroupname -n logicalvolumename -L 250M  
-      lvcreate volumegroupname -n logicalvolumename --extents 10  
+      lvcreate --name logicalvolumename volumegroupname -L 250M  
+      lvcreate --name logicalvolumename volumegroupname --extents 10  
 
-      si cada physical extent es de 4mb, entonces 10*4, el lvm será de 40M  
+      Si cada physical extent es de 4mb, entonces 10*4, el lvm será de 40M  
       </pre>
     </details>
 
@@ -572,11 +573,30 @@ Realiza la tarea expuesta en cada apartado y haz clic en "Mostrar comando" para 
       </pre>
     </details>
 
+11. Comando a ejecutar tras hacer cambios en las particiones
+    <details>
+      <summary>Mostrar comando</summary>
+
+      <pre>
+      partprobe --summary
+      </pre>
+    </details>
+
+
 <div id='id8' />
 
 ## 8. Stratis
 
-1. Crear un pool y listar los pools
+1. Instalar stratis
+    <details>
+      <summary>Mostrar comando</summary>
+
+      <pre>
+      yum install stratis-cli stratisd
+      </pre>
+    </details>
+
+2. Crear un pool y listar los pools
     <details>
       <summary>Mostrar comando</summary>
 
@@ -586,13 +606,62 @@ Realiza la tarea expuesta en cada apartado y haz clic en "Mostrar comando" para 
       </pre>
     </details>
 
-2. Crear filesystem y listar los filesystems
+3. Añadir un disco a un pool existente
+    <details>
+      <summary>Mostrar comando</summary>
+
+      <pre>
+      stratis pool add-data labpool1 /dev/vdd
+      </pre>
+    </details>
+
+4. Destruir un pool
+    <details>
+      <summary>Mostrar comando</summary>
+
+      <pre>
+      stratis pool destroy labpool1  
+      </pre>
+    </details>
+
+5. Crear filesystem y listar los filesystems
     <details>
       <summary>Mostrar comando</summary>
 
       <pre>
       stratis filesystem create labpool1 fs1  
       stratis filesystem list  
+      </pre>
+    </details>
+
+6. Indicar directorio donde estan los filesystems
+    <details>
+      <summary>Mostrar comando</summary>
+
+      <pre>
+      /dev/stratis/${pool-name}/${filesystem-name}
+      
+      </pre>
+    </details>
+
+7. Crear un snapshot de un filesystem
+    <details>
+      <summary>Mostrar comando</summary>
+
+      <pre>
+      stratis filesystem snapshot labpool1 fs1 fs1-snapshot
+      </pre>
+    </details>
+
+8. Establecer unidad stratis para que se monte en el arranque 
+    <details>
+      <summary>Mostrar comando</summary>
+
+      <pre>
+      #Obtenemos el UUID del device
+      lsblk --output=UUID /dev/stratis/${pool-name}/${filesystem-name}
+      
+      echo "UUID=105e8e96-2f87-4418-b8d6-0616b69b4410 /dirStratis xfs defaults,x-systemd.requires=stratisd.service" >> /etc/fstab
       </pre>
     </details>
 
@@ -823,9 +892,15 @@ Realiza la tarea expuesta en cada apartado y haz clic en "Mostrar comando" para 
 
       <pre>
       ls -lZ  
-      se muestra:  
-      unconfined_u:object_r:httpd_sys_content_t:s0  
-      user:role:??:label  
+      
+      Se muestra:  
+      
+      drwxr-xr-x.  6 root     root     system_u:object_r:etc_t:s0                     70 jul 12 11:05 X11
+      -rw-r--r--.  1 root     root     system_u:object_r:etc_t:s0                    642 dic  9  2016 xattr.conf
+      drwxr-xr-x.  4 root     root     system_u:object_r:etc_t:s0                     38 jul 12 11:05 xdg
+
+      Sintaxis contexto: user:role:tipo:label  
+
       </pre>
     </details>
 
