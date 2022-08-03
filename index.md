@@ -1,4 +1,7 @@
 # Simulacro del examen RHCSA 
+![version](https://img.shields.io/badge/version-1.1-red)
+![examen-version](https://img.shields.io/badge/RHCSA-9-red)
+
 Realiza la tarea expuesta en cada apartado y haz clic en "Mostrar comando" para ver un ejemplo de como realizar la tarea solicitada correctamente.
 
 ![RHCSALogo](https://www.tcc-consulting.com.hk/wp-content/uploads/2021/05/RED-HAT-LOGO-RHCSA-EX200.png)
