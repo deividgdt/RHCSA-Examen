@@ -1,6 +1,6 @@
 # Simulacro del examen RHCSA 
-![version](https://img.shields.io/badge/Version-1.3-green)
-![revision](https://img.shields.io/badge/Revision%20progress-50%25-red)
+![version](https://img.shields.io/badge/Version-1.4-yellow)
+![revision](https://img.shields.io/badge/Revision%20progress-65%25-red)
 ![examen-version](https://img.shields.io/badge/RHCSA-8-red)
 
 Realiza la tarea expuesta en cada apartado y haz clic en "Mostrar comando" para ver un ejemplo de como realizar la tarea solicitada correctamente.
@@ -831,7 +831,7 @@ Realiza la tarea expuesta en cada apartado y haz clic en "Mostrar comando" para 
 
 ## 12. chronyd
 
-1. Ver estado de sync de chronyc
+1. Ver el estado de sincronizacion de chronyc
     <details>
       <summary>Mostrar comando</summary>
 
@@ -863,17 +863,17 @@ Realiza la tarea expuesta en cada apartado y haz clic en "Mostrar comando" para 
       </pre>
     </details>
 
-2. Ver warnings,criticals,etc... en el journal
+2. Ver todos los criticals,warnings,errores,etc... del Journal
     <details>
       <summary>Mostrar comando</summary>
 
       <pre>
       journalctl -p [emerg|alert|crit|err|warning|notice|info|debug]  
-      Ejemplo: journalctl -u chronyd -p err  
+      Ejemplo para chronyd: journalctl -u chronyd -p err  
       </pre>
     </details>
 
-3. ver errores por una fecha especifica 
+3. Ver errores del Journal especificando una fecha de inicio y final
     <details>
       <summary>Mostrar comando</summary>
 
@@ -882,11 +882,12 @@ Realiza la tarea expuesta en cada apartado y haz clic en "Mostrar comando" para 
       </pre>
     </details>
 
-4. Filtros posibles al visualizar el journal
+4. Indicar los filtros posibles al visualizar el journal
     <details>
       <summary>Mostrar comando</summary>
 
       <pre>
+      Tenemos distintos tipos de filtros:
       journalctl _PID=1000  
       journalctl _UID=0  
       journalctl _COMM=command  
@@ -896,12 +897,12 @@ Realiza la tarea expuesta en cada apartado y haz clic en "Mostrar comando" para 
       </pre>
     </details>
 
-5. Guardar un mensaje indicado prioridad 
+5. Guardar un mensaje en el log indicando la prioridad 
     <details>
       <summary>Mostrar comando</summary>
 
       <pre>
-      logger -p local7.error "Esto es un error del copon"
+      logger -p local7.error "Esto es un error"
       </pre>
     </details>
 
@@ -909,7 +910,7 @@ Realiza la tarea expuesta en cada apartado y haz clic en "Mostrar comando" para 
 
 ## 14. Gestionando la seguridad del sistema con SELinux
 
-1. Ver contextos de seguridad
+1. Ver contextos de seguridad de SELiunx
     <details>
       <summary>Mostrar comando</summary>
 
@@ -931,36 +932,39 @@ Realiza la tarea expuesta en cada apartado y haz clic en "Mostrar comando" para 
       -rw-r--r--.  1 root     root     system_u:object_r:etc_t:s0                    642 dic  9  2016 xattr.conf
       drwxr-xr-x.  4 root     root     system_u:object_r:etc_t:s0                     38 jul 12 11:05 xdg
 
-      Sintaxis contexto: user:role:tipo:label  
+      Sintaxis del contexto: user:role:tipo:label  
 
       </pre>
     </details>
 
-3. Cambiar modo de funcionamiento de selinux
+3. Cambiar modo de funcionamiento de SELinux
     <details>
       <summary>Mostrar comando</summary>
 
       <pre>
       setenforce [0|1]  
       vi /etc/selinux/config  
+      # 0 desactiva temporalmente
+      # 1 activa temporalmente
+      # editar el fichero y modificar el parametro SELINUX=[enforcing|permissive|disabled]
       </pre>
     </details>
 
-4. Restaura contexto de seguridad selinux en directorio
-    <details>
-      <summary>Mostrar comando</summary>
-
-      <pre>
-      restorecon -v /directorio
-      </pre>
-    </details>
-
-5. Aplicar un contexto de seguridad especifico
+4. Aplicar un contexto de seguridad especifico a un directorio
     <details>
       <summary>Mostrar comando</summary>
 
       <pre>
       chcon -t httpd_sys_content_t /directorio
+      </pre>
+    </details>
+
+5. Restaura contexto de seguridad selinux en un directorio
+    <details>
+      <summary>Mostrar comando</summary>
+
+      <pre>
+      restorecon -v /directorio
       </pre>
     </details>
 
