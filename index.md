@@ -1,6 +1,6 @@
 # Simulacro del examen RHCSA 
-![version](https://img.shields.io/badge/Version-1.4-yellow)
-![revision](https://img.shields.io/badge/Revision%20progress-65%25-red)
+![version](https://img.shields.io/badge/Version-1.6-green)
+![revision](https://img.shields.io/badge/Revision%20progress-70%25-yellow)
 ![examen-version](https://img.shields.io/badge/RHCSA-8-red)
 
 Realiza la tarea expuesta en cada apartado y haz clic en "Mostrar comando" para ver un ejemplo de como realizar la tarea solicitada correctamente.
@@ -950,16 +950,19 @@ Realiza la tarea expuesta en cada apartado y haz clic en "Mostrar comando" para 
       </pre>
     </details>
 
-4. Aplicar un contexto de seguridad especifico a un directorio
+4. Aplicar un contexto de seguridad especifico a un directorio (temporal)
     <details>
       <summary>Mostrar comando</summary>
 
       <pre>
       chcon -t httpd_sys_content_t /directorio
+
+      # Si se hace un touch /.autorelabel se pierde el contexto asignado
+      # Si se hace un restorecon -v /directorio tambien se pierde el contexto asignado
       </pre>
     </details>
 
-5. Restaura contexto de seguridad selinux en un directorio
+5. Restaura contexto de seguridad SELinux en un directorio
     <details>
       <summary>Mostrar comando</summary>
 
@@ -968,7 +971,7 @@ Realiza la tarea expuesta en cada apartado y haz clic en "Mostrar comando" para 
       </pre>
     </details>
 
-6. Visualizar los Booleans de selinux
+6. Visualizar el estado de los Booleans de SELinux
     <details>
       <summary>Mostrar comando</summary>
 
@@ -977,7 +980,7 @@ Realiza la tarea expuesta en cada apartado y haz clic en "Mostrar comando" para 
       </pre>
     </details>
 
-7. Ver más detallada información de los boolean
+7. Ver informacion detallada de los boolean de SELinux
     <details>
       <summary>Mostrar comando</summary>
 
@@ -986,16 +989,7 @@ Realiza la tarea expuesta en cada apartado y haz clic en "Mostrar comando" para 
       </pre>
     </details>
 
-8. Activar o desactivar un boolean (reglas) temporal
-    <details>
-      <summary>Mostrar comando</summary>
-
-      <pre>
-      setbool -P abrt_anon_write on
-      </pre>
-    </details>
-
-9. Activar o desactivar un boolean definitivo
+8. Activar o desactivar un boolean
     <details>
       <summary>Mostrar comando</summary>
 
@@ -1004,7 +998,7 @@ Realiza la tarea expuesta en cada apartado y haz clic en "Mostrar comando" para 
       </pre>
     </details>
 
-10. Mantener cambios de contextos de seguridad tras relabel de selinux
+9. Aplicar un contexto de seguridad a un directorio y que este se mantenga tras hacer el autorelabel de SELinux
     <details>
       <summary>Mostrar comando</summary>
 
@@ -1013,7 +1007,7 @@ Realiza la tarea expuesta en cada apartado y haz clic en "Mostrar comando" para 
       </pre>
     </details>
 
-11. Ver errores de selinux
+10. Ver errores de SELinux
     <details>
       <summary>Mostrar comando</summary>
 
@@ -1023,16 +1017,16 @@ Realiza la tarea expuesta en cada apartado y haz clic en "Mostrar comando" para 
       </pre>
     </details>
 
-12. Ver puertos en SELinux
+11. Ver los registros de los objetos de tipo puerto (port) en SELinux
     <details>
       <summary>Mostrar comando</summary>
 
       <pre>
-      semanage port -l
+      semanage port --list
       </pre>
     </details>
 
-13. Agregar un puerto en selinux para Apache
+12. Agregar un puerto en SELinux para Apache
     <details>
       <summary>Mostrar comando</summary>
 
