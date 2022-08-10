@@ -1,6 +1,6 @@
 # Simulacro del examen RHCSA 
-![version](https://img.shields.io/badge/Version-1.6-green)
-![revision](https://img.shields.io/badge/Revision%20progress-70%25-yellow)
+![version](https://img.shields.io/badge/Version-1.7-green)
+![revision](https://img.shields.io/badge/Revision%20progress-85%25-yellow)
 ![examen-version](https://img.shields.io/badge/RHCSA-8-red)
 
 Realiza la tarea expuesta en cada apartado y haz clic en "Mostrar comando" para ver un ejemplo de como realizar la tarea solicitada correctamente.
@@ -956,7 +956,6 @@ Realiza la tarea expuesta en cada apartado y haz clic en "Mostrar comando" para 
 
       <pre>
       chcon -t httpd_sys_content_t /directorio
-
       # Si se hace un touch /.autorelabel se pierde el contexto asignado
       # Si se hace un restorecon -v /directorio tambien se pierde el contexto asignado
       </pre>
@@ -1026,25 +1025,25 @@ Realiza la tarea expuesta en cada apartado y haz clic en "Mostrar comando" para 
       </pre>
     </details>
 
-12. Agregar un puerto en SELinux para Apache
+12. Agregar el puerto 1009 en SELinux para Apache
     <details>
       <summary>Mostrar comando</summary>
 
       <pre>
-      semanage port -a -t http_port_t -p tcp 1009
+      semanage port --add --type http_port_t --proto tcp 1009
       </pre>
     </details>
 
 <div id='id15' />
 
-## 15. Administración y gestión del Firewall, con firewall-cmd
+## 15. Administración y gestión del Firewall
 
-1. Agregar un servicio permanentemente
+1. Agregar el servicio https permanentemente
     <details>
       <summary>Mostrar comando</summary>
 
       <pre>
-      firewall-cmd --permanent --add-service=https  
+      firewall-cmd --permanent --add-service=https
       </pre>
     </details>
 
@@ -1075,11 +1074,29 @@ Realiza la tarea expuesta en cada apartado y haz clic en "Mostrar comando" para 
       </pre>
     </details>
 
+5. Listar la configuración de la zona activa
+    <details>
+      <summary>Mostrar comando</summary>
+
+      <pre>
+      firewall-cmd --list-all
+      </pre>
+    </details>
+
+6. Listar información de todas las zonas
+    <details>
+      <summary>Mostrar comando</summary>
+
+      <pre>
+      firewall-cmd --list-all-zones
+      </pre>
+    </details>
+
 <div id='id16' />
 
 ## 16. Uso de SUDO
 
-1. Configurar un usuario para que no se le pida contraseña
+1. Configurar un usuario para que no se le pida contraseña al usar sudo
     <details>
       <summary>Mostrar comando</summary>
 
@@ -1090,7 +1107,7 @@ Realiza la tarea expuesta en cada apartado y haz clic en "Mostrar comando" para 
       </pre>
     </details>
 
-2. Configurar un grupo para que tenga permisos sudo
+2. Configurar un grupo para que sus usuarios tengan permisos sudo
     <details>
       <summary>Mostrar comando</summary>
 
@@ -1105,11 +1122,12 @@ Realiza la tarea expuesta en cada apartado y haz clic en "Mostrar comando" para 
 
 ## 17. Gestion de Usuarios y grupos
 
-1. Comandos para gestionar usuarios y grupos
+1. Listar los comandos para gestionar usuarios y grupos
     <details>
       <summary>Mostrar comando</summary>
 
       <pre>
+      # Estos son algunos de los comandos con los que se gestionan los grupos y usuarios
       usermod  
       useradd  
       gpasswd  
@@ -1118,22 +1136,31 @@ Realiza la tarea expuesta en cada apartado y haz clic en "Mostrar comando" para 
       </pre>
     </details>
 
-2. Explicación del comando chage  
+2. Observando la explicación del comando chage configura que la contraseña de un usuario tenga: minimo 2 dias antes de cambiarla, maximo, 1 mes para cambiarla, le avise 2 dias antes de la expiracion, y quede inactiva despues de 1 dia.
     ![image](images/chagecommand-explanation.png)
     <details>
       <summary>Mostrar comando</summary>
       
       <pre>
-      chage -m 2 -M 31 -W 2 -I 1 -E 2022-12-31 user
+      chage -m 2 -M 31 -W 2 -I 1 user
       </pre>
     </details>
 
-3. Bloquear una cuenta en fecha determinada
+3. Configura la cuenta de un usuario para que su contraseña caduque el 31 de diciembre de 2022
     <details>
       <summary>Mostrar comando</summary>
 
       <pre>
-      usermod -L -e 2022-07-30 david  
+      chage -E 2022-12-31 user
+      </pre>
+    </details>
+
+4. Configura una cuenta par aque esta quede bloqueada el 30 de Julio de 2023
+    <details>
+      <summary>Mostrar comando</summary>
+
+      <pre>
+      usermod --lock --expiredate 2023-07-30 david  
       </pre>
     </details>
 
@@ -1141,12 +1168,14 @@ Realiza la tarea expuesta en cada apartado y haz clic en "Mostrar comando" para 
 
 ## 18. Permisos especiales
 
-1. Como agregar y quitar permisos setuid
+Puedes obtener más información de esta apartado [en esta entrada](https://deividsdocs.wordpress.com/2015/06/21/setuid-setgid-y-sticky-bit/)
+
+1. Agrega y quita permisos de setuid a un fichero usando notación numerica (octal) y simbolica.
     <details>
       <summary>Mostrar comando</summary>
 
       <pre>
-      El permiso SetUID en un archivo provoca que cualquier usuario que ejecute el fichero obtenga los  permisos del propietario del fichero
+      # El permiso SetUID en un archivo provoca que cualquier usuario que ejecute el fichero obtenga los  permisos del propietario del fichero
 
       chmod u+s file.sh  
       chmod 4700 file.sh  
@@ -1155,14 +1184,13 @@ Realiza la tarea expuesta en cada apartado y haz clic en "Mostrar comando" para 
       </pre>
     </details>
 
-2. Como agregar y quitar permisos setgid
+2. Agrega y quita permisos de setgid en un fichero y un directorio, usando notación numerica (octal) y simbolica
     <details>
       <summary>Mostrar comando</summary>
 
       <pre>
-      En un fichero es similar a SetUID, trabaja dando los permisos del grupo al usuario que ejecuta el archivo  
-
-      En un directorio actúa estableciendo siempre el grupo del propietario como grupo para todos los ficheros/directorios que se creen dentro del mismo  
+      # En un fichero es similar a SetUID, trabaja dando los permisos del grupo al usuario que ejecuta el archivo  
+      # En un directorio actúa estableciendo siempre el grupo del propietario como grupo para todos los ficheros/directorios que se creen dentro del mismo  
 
       chmod g+s file.sh  
       chmod 2700 file.sh  
@@ -1175,12 +1203,12 @@ Realiza la tarea expuesta en cada apartado y haz clic en "Mostrar comando" para 
       </pre>
     </details>
 
-3. Como agregar y quitar permisos  sticky bit
+3. Agrega y quita permisos de stickybit a un fichero usando notación numerica (octal) y simbolica.
     <details>
       <summary>Mostrar comando</summary>
 
       <pre>
-      El sticky bit se utiliza en directorios compartidos, es decir, directorios en los que muchos usuarios pueden escribir, y como bien sabemos si un usuario puede escribir en un directorio también puede borrar aunque no sea propietario del archivo que borra.
+      # El sticky bit se utiliza en directorios compartidos, es decir, directorios en los que muchos usuarios pueden escribir, y como bien sabemos si un usuario puede escribir en un directorio también puede borrar aunque no sea propietario del archivo que borra.
 
       chmod o+t directorio  
       chmod 1700 directorio
@@ -1194,7 +1222,7 @@ Realiza la tarea expuesta en cada apartado y haz clic en "Mostrar comando" para 
 
 ## 19. Gestion y administracion de procesos
 
-1. Matar la sesion de usuario
+1. Mata la sesion de usuario 
     <details>
       <summary>Mostrar comando</summary>
 
@@ -1205,7 +1233,7 @@ Realiza la tarea expuesta en cada apartado y haz clic en "Mostrar comando" para 
       </pre>
     </details>
 
-2. Arrancar un proceso con un valor nice especifico
+2. Arrancar un proceso con el valor nice 15
     <details>
       <summary>Mostrar comando</summary>
 
@@ -1214,12 +1242,12 @@ Realiza la tarea expuesta en cada apartado y haz clic en "Mostrar comando" para 
       </pre>
     </details>
 
-3. Modificar el valor nice actual de un proceso
+3. Modificar el valor nice actual de un proceso a -10 indicando el PID
     <details>
       <summary>Mostrar comando</summary>
 
       <pre>
-      renice -n -10 132
+      renice -n -10 -p 132
       </pre>
     </details>
 
