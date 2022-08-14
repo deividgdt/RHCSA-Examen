@@ -1,6 +1,6 @@
 # Simulacro del examen RHCSA 
-![version](https://img.shields.io/badge/Version-1.7-green)
-![revision](https://img.shields.io/badge/Revision%20progress-85%25-yellow)
+![version](https://img.shields.io/badge/Version-1.8-green)
+![revision](https://img.shields.io/badge/Revision%20progress-100%25-green)
 ![examen-version](https://img.shields.io/badge/RHCSA-8-red)
 
 Realiza la tarea expuesta en cada apartado y haz clic en "Mostrar comando" para ver un ejemplo de como realizar la tarea solicitada correctamente.
@@ -1155,7 +1155,7 @@ Realiza la tarea expuesta en cada apartado y haz clic en "Mostrar comando" para 
       </pre>
     </details>
 
-4. Configura una cuenta par aque esta quede bloqueada el 30 de Julio de 2023
+4. Configura una cuenta para que esta quede bloqueada el 30 de Julio de 2023
     <details>
       <summary>Mostrar comando</summary>
 
@@ -1255,21 +1255,41 @@ Puedes obtener más información de esta apartado [en esta entrada](https://deiv
 
 ## 20. Perfiles de sintonización (tune profile)
 
-4. Instalar tuned
+1. Instalar y activar tuned
     <details>
       <summary>Mostrar comando</summary>
 
       <pre>
-      Instalar tuned  
+      yum install tuned 
+      systemctl enable --now tuned
       </pre>
     </details>
 
-5. Comando de gestion de perfiles
+2. Listar perfiles tune existentes
     <details>
       <summary>Mostrar comando</summary>
 
       <pre>
-      tune-adm
+      tuned-adm list
+      </pre>
+    </details>
+
+3. Ver perfil tuned activo
+    <details>
+      <summary>Mostrar comando</summary>
+
+      <pre>
+      tuned-adm active
+      </pre>
+    </details>
+
+4. Cambiar al perfil tuned latency-performance y verficarlo
+    <details>
+      <summary>Mostrar comando</summary>
+
+      <pre>
+      tuned-adm profile latency-performance 
+      tuned-adm verify
       </pre>
     </details>
 
@@ -1277,18 +1297,19 @@ Puedes obtener más información de esta apartado [en esta entrada](https://deiv
 
 ## 21. Ficheros y directorios temporales
 
-1. Cuales son los directorios gestionados por systemd para ficheros temporales 
+1. Indicar los directorios gestionados por systemd para ficheros temporales
     <details>
       <summary>Mostrar comando</summary>
 
       <pre>
+      # Algunos de los directorios principales
       /etc/tmpfiles.d   
       /usr/lib/tmpfiles.d  
       /run/tmpfiles.d  
       </pre>
     </details>
 
-2. Ver servicio el servicio de limpieza de ficheros temporales
+2. Ver el estado del servicio de limpieza de ficheros temporales
     <details>
       <summary>Mostrar comando</summary>
 
@@ -1306,7 +1327,7 @@ Puedes obtener más información de esta apartado [en esta entrada](https://deiv
       </pre>
     </details>
 
-4. Crear directorios temporales
+4. Crear los directorios temporales de systemd-tmpfiles
     <details>
       <summary>Mostrar comando</summary>
 
@@ -1315,7 +1336,7 @@ Puedes obtener más información de esta apartado [en esta entrada](https://deiv
       </pre>
     </details>
 
-5. Ver configuracion actual de directorios temporales
+5. Ver configuracion actual de los directorios temporales
     <details>
       <summary>Mostrar comando</summary>
 
@@ -1323,6 +1344,22 @@ Puedes obtener más información de esta apartado [en esta entrada](https://deiv
       systemd-tmpfiles --cat-config
       </pre>
     </details>
+
+6. Crear un fichero de configuración para que limpie los ficheros que sean mas viejos de 30s en el directorio /run/momentaneos
+    <details>
+      <summary>Mostrar comando</summary>
+
+      <pre>
+      # Creamos el fichero momentaneos.conf en /etc/tmpfiles.d
+      echo "d /run/momentaneos 0700 root root 30s" >> /etc/tmpfiles.d/momentaneos.conf
+      # Ejecutamos la creacion del directorio
+      systemd-tmpfiles --create /etc/tmpfiles.d/momentaneos.conf
+      # Tras crear un fichero /run/momentaneos y esperar más de 30 segundos, se puede limpiar este directorio, ejecutando:
+      systemd-tmpfiles --clean /etc/tmpfiles.d/momentaneos.conf
+      </pre>
+    </details>
+
+
 
 <div id='id22' />
 
@@ -1337,7 +1374,7 @@ Puedes obtener más información de esta apartado [en esta entrada](https://deiv
       </pre>
     </details>
 
-2. Buscar una imagen en el registry de redhat
+2. Buscar una imagen de mariadb en el registry de redhat
     <details>
       <summary>Mostrar comando</summary>
 
@@ -1346,7 +1383,7 @@ Puedes obtener más información de esta apartado [en esta entrada](https://deiv
       </pre>
     </details>
 
-3. Pullear un contenedor desde el registry de redhat
+3. Hacer pull del contenedor mariadb-103 desde el registry de redhat
     <details>
       <summary>Mostrar comando</summary>
 
@@ -1357,7 +1394,7 @@ Puedes obtener más información de esta apartado [en esta entrada](https://deiv
       </pre>
     </details>
 
-4. Ver imagenes locales
+4. Ver las imagenes locales
     <details>
       <summary>Mostrar comando</summary>
 
@@ -1366,7 +1403,7 @@ Puedes obtener más información de esta apartado [en esta entrada](https://deiv
       </pre>
     </details>
 
-5. Inspeccionar una imagen especifica
+5. Inspeccionar una imagen especifica usando el UUID
     <details>
       <summary>Mostrar comando</summary>
 
